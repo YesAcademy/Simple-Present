@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Quest: Present Simple</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f1f5f9;
+        }
+
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            background-color: #f8fafc;
+            border-color: #6366f1;
+        }
+
+        .option-btn:active {
+            transform: scale(0.97);
+        }
+
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background-color: #e2e8f0;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div id="game-container" class="w-full max-w-lg bg-white rounded-[3rem] shadow-2xl overflow-hidden border-[12px] border-indigo-50">
+        
+        <!-- Start Screen -->
+        <div id="start-screen" class="p-10 text-center">
+            <div class="mb-6 inline-block p-6 bg-indigo-600 rounded-full shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </div>
+            <h1 class="text-4xl font-extrabold text-slate-900 mb-3 text-center">English Quest</h1>
+            <p class="text-lg text-slate-500 mb-10 text-center">A1 Level - Present Simple Practice</p>
+            
+            <button onclick="startGame()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-8 rounded-3xl text-2xl shadow-xl transition-all active:translate-y-1">
+                START GAME
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden fade-in">
+            <div class="p-6 flex justify-between items-center bg-white border-b border-slate-50">
+                <div>
+                    <span id="question-count" class="text-xs font-black text-indigo-400 uppercase tracking-widest block mb-1">Question 1/10</span>
+                    <div class="flex gap-1" id="hearts-container"></div>
+                </div>
+                <div class="bg-yellow-100 px-4 py-2 rounded-2xl flex items-center gap-2">
+                    <span class="text-xl">⭐</span>
+                    <span id="score" class="font-black text-yellow-700">0</span>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <!-- Visual Content -->
+                <div class="image-container mb-6 aspect-video">
+                    <img id="question-image" src="" alt="Vocabulary Image" class="w-full h-full object-cover">
+                </div>
+
+                <div class="mb-8 text-center">
+                    <h2 id="question-text" class="text-2xl font-bold text-slate-800 leading-tight"></h2>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-3"></div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden p-12 text-center fade-in">
+            <div id="final-emoji" class="text-8xl mb-6">🏆</div>
+            <h2 id="result-title" class="text-3xl font-black text-slate-900 mb-8 text-center">Congratulations!</h2>
+            
+            <div class="bg-slate-50 rounded-[2rem] p-8 mb-8 border-2 border-slate-100">
+                <p class="text-slate-400 font-bold uppercase text-xs mb-1">Final Score</p>
+                <div class="text-7xl font-black text-indigo-600" id="final-score">0</div>
+            </div>
+            
+            <button onclick="resetGame()" class="w-full bg-slate-900 text-white font-bold py-5 px-8 rounded-3xl text-xl hover:bg-slate-800 transition-all">
+                Play Again
+            </button>
+        </div>
+
+        <!-- Feedback Modal -->
+        <div id="feedback-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
+            <div class="bg-white rounded-[2.5rem] p-8 max-w-sm w-full text-center shadow-2xl">
+                <div id="feedback-icon" class="text-7xl mb-4"></div>
+                <h3 id="feedback-title" class="text-2xl font-black text-slate-900 mb-2"></h3>
+                <p id="feedback-message" class="text-slate-500 mb-8"></p>
+                <button onclick="closeFeedback()" id="feedback-btn" class="w-full py-4 px-6 rounded-2xl font-black text-white text-lg shadow-lg"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { 
+                q: "I _____ a happy student.", 
+                options: ["am", "is", "are"], 
+                correct: 0, 
+                hint: "Remember: I + am.", 
+                img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=500&q=80"
+            },
+            { 
+                q: "She _____ my best friend.", 
+                options: ["am", "is", "are"], 
+                correct: 1, 
+                hint: "Remember: He/She/It + is.", 
+                img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80"
+            },
+            { 
+                q: "They _____ from Spain.", 
+                options: ["am", "is", "are"], 
+                correct: 2, 
+                hint: "Remember: You/We/They + are.", 
+                img: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=500&q=80"
+            },
+            { 
+                q: "He _____ pizza every Friday.", 
+                options: ["eat", "eats", "eating"], 
+                correct: 1, 
+                hint: "Add 's' for He/She/It in positive sentences.", 
+                img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80"
+            },
+            { 
+                q: "We _____ in a big house.", 
+                options: ["live", "lives", "living"], 
+                correct: 0, 
+                hint: "No 's' for I/You/We/They.", 
+                img: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500&q=80"
+            },
+            { 
+                q: "_____ you like chocolate?", 
+                options: ["Do", "Does", "Are"], 
+                correct: 0, 
+                hint: "Use 'Do' for I/You/We/They in questions.", 
+                img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=500&q=80"
+            },
+            { 
+                q: "_____ she speak English?", 
+                options: ["Do", "Does", "Is"], 
+                correct: 1, 
+                hint: "Use 'Does' for He/She/It in questions.", 
+                img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=500&q=80"
+            },
+            { 
+                q: "I _____ play video games.", 
+                options: ["don't", "doesn't", "not"], 
+                correct: 0, 
+                hint: "Use 'don't' for I/You/We/They in negatives.", 
+                img: "https://images.unsplash.com/photo-1592840331052-16e15c2c6f95?w=500&q=80"
+            },
+            { 
+                q: "He _____ have a car.", 
+                options: ["don't", "doesn't", "isn't"], 
+                correct: 1, 
+                hint: "Use 'doesn't' for He/She/It in negatives.", 
+                img: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=500&q=80"
+            },
+            { 
+                q: "My cat is cute. _____ is white.", 
+                options: ["He", "She", "It"], 
+                correct: 2, 
+                hint: "Use 'It' for objects or animals.", 
+                img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&q=80"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let lives = 3;
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            score = 0;
+            lives = 3;
+            currentQuestionIndex = 0;
+            updateStats();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestionIndex];
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('question-count').innerText = `Question ${currentQuestionIndex + 1}/${questions.length}`;
+            document.getElementById('question-image').src = q.img;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full py-4 px-6 rounded-2xl border-2 border-slate-100 text-xl font-bold text-slate-700 hover:border-indigo-500 hover:text-indigo-600 bg-white";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(index) {
+            const q = questions[currentQuestionIndex];
+            if (index === q.correct) {
+                score += 10;
+                showFeedback(true, "Great Job!", "That is correct!");
+            } else {
+                lives--;
+                showFeedback(false, "Not quite!", q.hint);
+            }
+            updateStats();
+        }
+
+        function showFeedback(isCorrect, title, message) {
+            const modal = document.getElementById('feedback-modal');
+            const fTitle = document.getElementById('feedback-title');
+            const fMsg = document.getElementById('feedback-message');
+            const fIcon = document.getElementById('feedback-icon');
+            const fBtn = document.getElementById('feedback-btn');
+            
+            fTitle.innerText = title;
+            fMsg.innerText = message;
+            
+            if (isCorrect) {
+                fIcon.innerText = "🌟";
+                fBtn.innerText = "Next Question";
+                fBtn.className = "w-full py-4 px-6 rounded-2xl font-black text-white bg-green-500 hover:bg-green-600 shadow-lg";
+            } else {
+                fIcon.innerText = "💡";
+                fBtn.innerText = "Got it!";
+                fBtn.className = "w-full py-4 px-6 rounded-2xl font-black text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg";
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedback-modal').classList.add('hidden');
+            if (lives <= 0 || currentQuestionIndex >= questions.length - 1) {
+                endGame();
+            } else {
+                currentQuestionIndex++;
+                showQuestion();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('score').innerText = score;
+            const hearts = document.getElementById('hearts-container');
+            hearts.innerHTML = '';
+            for(let i=0; i<3; i++) {
+                const heart = document.createElement('span');
+                heart.innerText = i < lives ? '❤️' : '🖤';
+                heart.className = "text-xl";
+                hearts.appendChild(heart);
+            }
+        }
+
+        function endGame() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+        }
+
+        function resetGame() {
+            startGame();
+        }
+    </script>
+</body>
+</html>
