@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Quest: Present Simple</title>
+    <title>English Quest: YES Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
         
+        :root {
+            --brand-dark-blue: #103459;
+            --brand-light-blue: #008EF7;
+            --brand-red: #ff0000;
+        }
+
         body {
             font-family: 'Outfit', sans-serif;
             background-color: #f1f5f9;
@@ -15,25 +21,43 @@
 
         .option-btn {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #e2e8f0;
         }
 
-        .option-btn:hover {
+        .option-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            background-color: #f8fafc;
-            border-color: #6366f1;
+            border-color: var(--brand-light-blue);
+            color: var(--brand-light-blue);
         }
 
         .option-btn:active {
             transform: scale(0.97);
         }
 
+        /* Feedback sutil */
+        .btn-correct {
+            border-color: #22c55e !important;
+            background-color: #f0fdf4 !important;
+            color: #166534 !important;
+        }
+
+        .btn-wrong {
+            border-color: var(--brand-red) !important;
+            background-color: #fef2f2 !important;
+            color: #991b1b !important;
+        }
+
         .image-container {
             position: relative;
             overflow: hidden;
-            border-radius: 2rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(16, 52, 89, 0.1);
             background-color: #e2e8f0;
         }
+
+        .brand-text-dark { color: var(--brand-dark-blue); }
+        .brand-bg-dark { background-color: var(--brand-dark-blue); }
+        .brand-bg-light { background-color: var(--brand-light-blue); }
 
         .fade-in {
             animation: fadeIn 0.4s ease-out forwards;
@@ -47,43 +71,45 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <div id="game-container" class="w-full max-w-lg bg-white rounded-[3rem] shadow-2xl overflow-hidden border-[12px] border-indigo-50">
+    <div id="game-container" class="w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-[8px] border-slate-50">
         
         <!-- Start Screen -->
         <div id="start-screen" class="p-10 text-center">
-            <div class="mb-6 inline-block p-6 bg-indigo-600 rounded-full shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
+            <div class="mb-8">
+                <img src="https://i.ibb.co/3ykG4S5/Logo-horizontal-transparente.png" alt="YES Logo" class="h-16 mx-auto mb-6">
             </div>
-            <h1 class="text-4xl font-extrabold text-slate-900 mb-3 text-center">English Quest</h1>
-            <p class="text-lg text-slate-500 mb-10 text-center">A1 Level - Present Simple Practice</p>
+            <h1 class="text-4xl font-extrabold brand-text-dark mb-3">English Quest</h1>
+            <p class="text-lg text-slate-500 mb-10">Domina el Presente Simple en 3 Rondas</p>
             
-            <button onclick="startGame()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-8 rounded-3xl text-2xl shadow-xl transition-all active:translate-y-1">
-                START GAME
+            <button onclick="startGame()" class="w-full brand-bg-light hover:opacity-90 text-white font-black py-5 px-8 rounded-3xl text-2xl shadow-lg transition-all active:translate-y-1">
+                ¡EMPEZAR DESAFÍO!
             </button>
         </div>
 
         <!-- Quiz Screen -->
         <div id="quiz-screen" class="hidden fade-in">
-            <div class="p-6 flex justify-between items-center bg-white border-b border-slate-50">
+            <div class="p-4 flex justify-between items-center bg-white border-b border-slate-50">
+                <img src="https://i.ibb.co/3ykG4S5/Logo-horizontal-transparente.png" alt="YES Logo" class="h-6 opacity-80">
+                <div class="flex gap-1" id="hearts-container"></div>
+            </div>
+            
+            <div class="px-6 py-2 flex justify-between items-center">
                 <div>
-                    <span id="question-count" class="text-xs font-black text-indigo-400 uppercase tracking-widest block mb-1">Question 1/10</span>
-                    <div class="flex gap-1" id="hearts-container"></div>
+                    <span id="round-title" class="text-[10px] font-black brand-text-dark uppercase tracking-[0.2em] block">ROUND 1: TO BE</span>
+                    <span id="question-count" class="text-xs font-bold text-slate-400">1/10</span>
                 </div>
-                <div class="bg-yellow-100 px-4 py-2 rounded-2xl flex items-center gap-2">
-                    <span class="text-xl">⭐</span>
-                    <span id="score" class="font-black text-yellow-700">0</span>
+                <div class="bg-indigo-50 px-4 py-1 rounded-full flex items-center gap-2">
+                    <span class="text-sm">⭐</span>
+                    <span id="score" class="font-black brand-text-dark">0</span>
                 </div>
             </div>
 
-            <div class="p-6">
-                <!-- Visual Content -->
-                <div class="image-container mb-6 aspect-video">
-                    <img id="question-image" src="" alt="Vocabulary Image" class="w-full h-full object-cover">
+            <div class="p-6 pt-2">
+                <div class="image-container mb-6 aspect-video border-2 border-slate-100">
+                    <img id="question-image" src="" alt="Learning Illustration" class="w-full h-full object-cover">
                 </div>
 
-                <div class="mb-8 text-center">
+                <div class="mb-6 text-center">
                     <h2 id="question-text" class="text-2xl font-bold text-slate-800 leading-tight"></h2>
                 </div>
 
@@ -93,16 +119,17 @@
 
         <!-- Result Screen -->
         <div id="result-screen" class="hidden p-12 text-center fade-in">
-            <div id="final-emoji" class="text-8xl mb-6">🏆</div>
-            <h2 id="result-title" class="text-3xl font-black text-slate-900 mb-8 text-center">Congratulations!</h2>
+            <img src="https://i.ibb.co/3ykG4S5/Logo-horizontal-transparente.png" alt="YES Logo" class="h-12 mx-auto mb-8">
+            <div id="final-emoji" class="text-7xl mb-6">🏆</div>
+            <h2 id="result-title" class="text-3xl font-black text-slate-900 mb-8">¡Excelente trabajo!</h2>
             
             <div class="bg-slate-50 rounded-[2rem] p-8 mb-8 border-2 border-slate-100">
-                <p class="text-slate-400 font-bold uppercase text-xs mb-1">Final Score</p>
-                <div class="text-7xl font-black text-indigo-600" id="final-score">0</div>
+                <p class="text-slate-400 font-bold uppercase text-xs mb-1">Puntuación Final</p>
+                <div class="text-7xl font-black brand-text-dark" id="final-score">0</div>
             </div>
             
-            <button onclick="resetGame()" class="w-full bg-slate-900 text-white font-bold py-5 px-8 rounded-3xl text-xl hover:bg-slate-800 transition-all">
-                Play Again
+            <button onclick="resetGame()" class="w-full brand-bg-dark text-white font-bold py-5 px-8 rounded-3xl text-xl hover:opacity-95 transition-all">
+                Jugar de nuevo
             </button>
         </div>
 
@@ -110,90 +137,59 @@
         <div id="feedback-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
             <div class="bg-white rounded-[2.5rem] p-8 max-w-sm w-full text-center shadow-2xl">
                 <div id="feedback-icon" class="text-7xl mb-4"></div>
-                <h3 id="feedback-title" class="text-2xl font-black text-slate-900 mb-2"></h3>
+                <h3 id="feedback-title" class="text-2xl font-black brand-text-dark mb-2"></h3>
                 <p id="feedback-message" class="text-slate-500 mb-8"></p>
-                <button onclick="closeFeedback()" id="feedback-btn" class="w-full py-4 px-6 rounded-2xl font-black text-white text-lg shadow-lg"></button>
+                <button onclick="closeFeedback()" id="feedback-btn" class="w-full py-4 px-6 rounded-2xl font-black text-white text-lg shadow-lg transition-transform active:scale-95"></button>
             </div>
         </div>
     </div>
 
     <script>
-        const questions = [
-            { 
-                q: "I _____ a happy student.", 
-                options: ["am", "is", "are"], 
-                correct: 0, 
-                hint: "Remember: I + am.", 
-                img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=500&q=80"
-            },
-            { 
-                q: "She _____ my best friend.", 
-                options: ["am", "is", "are"], 
-                correct: 1, 
-                hint: "Remember: He/She/It + is.", 
-                img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80"
-            },
-            { 
-                q: "They _____ from Spain.", 
-                options: ["am", "is", "are"], 
-                correct: 2, 
-                hint: "Remember: You/We/They + are.", 
-                img: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=500&q=80"
-            },
-            { 
-                q: "He _____ pizza every Friday.", 
-                options: ["eat", "eats", "eating"], 
-                correct: 1, 
-                hint: "Add 's' for He/She/It in positive sentences.", 
-                img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80"
-            },
-            { 
-                q: "We _____ in a big house.", 
-                options: ["live", "lives", "living"], 
-                correct: 0, 
-                hint: "No 's' for I/You/We/They.", 
-                img: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500&q=80"
-            },
-            { 
-                q: "_____ you like chocolate?", 
-                options: ["Do", "Does", "Are"], 
-                correct: 0, 
-                hint: "Use 'Do' for I/You/We/They in questions.", 
-                img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=500&q=80"
-            },
-            { 
-                q: "_____ she speak English?", 
-                options: ["Do", "Does", "Is"], 
-                correct: 1, 
-                hint: "Use 'Does' for He/She/It in questions.", 
-                img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=500&q=80"
-            },
-            { 
-                q: "I _____ play video games.", 
-                options: ["don't", "doesn't", "not"], 
-                correct: 0, 
-                hint: "Use 'don't' for I/You/We/They in negatives.", 
-                img: "https://images.unsplash.com/photo-1592840331052-16e15c2c6f95?w=500&q=80"
-            },
-            { 
-                q: "He _____ have a car.", 
-                options: ["don't", "doesn't", "isn't"], 
-                correct: 1, 
-                hint: "Use 'doesn't' for He/She/It in negatives.", 
-                img: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=500&q=80"
-            },
-            { 
-                q: "My cat is cute. _____ is white.", 
-                options: ["He", "She", "It"], 
-                correct: 2, 
-                hint: "Use 'It' for objects or animals.", 
-                img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&q=80"
-            }
+        // RONDAS DE PREGUNTAS (Imágenes actualizadas y relacionadas)
+        const round1 = [ // Verb to Be
+            { q: "I _____ a happy student.", options: ["am", "is", "are"], correct: 0, hint: "I + am.", img: "https://images.unsplash.com/photo-1544717297-fa95b8ee4a03?w=600&q=80" },
+            { q: "She _____ my best friend.", options: ["am", "is", "are"], correct: 1, hint: "He/She/It + is.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80" },
+            { q: "They _____ from Spain.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=600&q=80" },
+            { q: "It _____ a sunny day.", options: ["am", "is", "are"], correct: 1, hint: "Objetos/Clima (It) + is.", img: "https://images.unsplash.com/photo-1444333509404-89ce7bcf42f0?w=600&q=80" },
+            { q: "You _____ very tall.", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.unsplash.com/photo-1510133769068-ad0560ac399e?w=600&q=80" },
+            { q: "We _____ hungry.", options: ["am", "is", "are"], correct: 2, hint: "We + are.", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&q=80" },
+            { q: "My car _____ blue.", options: ["am", "is", "are"], correct: 1, hint: "Car (It) + is.", img: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&q=80" },
+            { q: "The cats _____ black.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&q=80" },
+            { q: "I _____ not tired.", options: ["am", "is", "are"], correct: 0, hint: "I + am + not.", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80" },
+            { q: "_____ she your teacher?", options: ["Am", "Is", "Are"], correct: 1, hint: "Is + She...?", img: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=600&q=80" }
         ];
 
+        const round2 = [ // Action Verbs
+            { q: "He _____ pizza every Friday.", options: ["eat", "eats", "eating"], correct: 1, hint: "He/She/It + verbo con 's'.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80" },
+            { q: "We _____ in a big house.", options: ["live", "lives", "living"], correct: 0, hint: "We + verbo base.", img: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80" },
+            { q: "I _____ play video games.", options: ["don't", "doesn't", "not"], correct: 0, hint: "I + don't + verbo.", img: "https://images.unsplash.com/photo-1592840331052-16e15c2c6f95?w=600&q=80" },
+            { q: "She _____ to music.", options: ["listen", "listens", "listening"], correct: 1, hint: "She + verbo con 's'.", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80" },
+            { q: "They _____ to the park.", options: ["go", "goes", "going"], correct: 0, hint: "They + verbo base.", img: "https://images.unsplash.com/photo-1519337265831-281ec6cc8514?w=600&q=80" },
+            { q: "_____ you like chocolate?", options: ["Do", "Does", "Are"], correct: 0, hint: "Do + You...?", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=600&q=80" },
+            { q: "My dad _____ a car.", options: ["drive", "drives", "driving"], correct: 1, hint: "My dad (He) + verbo con 's'.", img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80" },
+            { q: "Do you _____ coffee?", options: ["drink", "drinks", "drinking"], correct: 0, hint: "Con auxiliar 'Do', el verbo es base.", img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80" },
+            { q: "She _____ speak Italian.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "She + doesn't + verbo.", img: "https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=600&q=80" },
+            { q: "I _____ English every day.", options: ["study", "studies", "studying"], correct: 0, hint: "I + verbo base.", img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80" }
+        ];
+
+        const round3 = [ // Mixed Challenge
+            { q: "Where _____ you from?", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.unsplash.com/photo-1527672829624-fef145e99aea?w=600&q=80" },
+            { q: "He _____ like vegetables.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "He + doesn't.", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" },
+            { q: "_____ he have a sister?", options: ["Do", "Does", "Is"], correct: 1, hint: "Does + He...?", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=600&q=80" },
+            { q: "The sun _____ in the morning.", options: ["shine", "shines", "shining"], correct: 1, hint: "Sun (It) + shines.", img: "https://images.unsplash.com/photo-1470252649358-96f3c8024219?w=600&q=80" },
+            { q: "I _____ breakfast at 8:00.", options: ["have", "has", "having"], correct: 0, hint: "I + have.", img: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&q=80" },
+            { q: "My phone _____ broken.", options: ["am", "is", "are"], correct: 1, hint: "Phone (It) + is.", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80" },
+            { q: "We _____ play football.", options: ["don't", "doesn't", "isn't"], correct: 0, hint: "We + don't.", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80" },
+            { q: "Who _____ they?", options: ["am", "is", "are"], correct: 2, hint: "They + are.", img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=80" },
+            { q: "She _____ a red dress.", options: ["wear", "wears", "wearing"], correct: 1, hint: "She + wears.", img: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600&q=80" },
+            { q: "My cat is white. _____ is cute.", options: ["He", "She", "It"], correct: 2, hint: "Animals (It) + is.", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80" }
+        ];
+
+        let currentRound = 1;
         let currentQuestionIndex = 0;
         let score = 0;
         let lives = 3;
+        let activeQuestions = [];
 
         function startGame() {
             document.getElementById('start-screen').classList.add('hidden');
@@ -201,15 +197,20 @@
             document.getElementById('result-screen').classList.add('hidden');
             score = 0;
             lives = 3;
+            currentRound = 1;
             currentQuestionIndex = 0;
+            activeQuestions = [...round1];
             updateStats();
             showQuestion();
         }
 
         function showQuestion() {
-            const q = questions[currentQuestionIndex];
+            const q = activeQuestions[currentQuestionIndex];
+            const roundNames = ["", "Verb to Be", "Action Verbs", "Mixed Challenge"];
+            
+            document.getElementById('round-title').innerText = `ROUND ${currentRound}: ${roundNames[currentRound]}`;
             document.getElementById('question-text').innerText = q.q;
-            document.getElementById('question-count').innerText = `Question ${currentQuestionIndex + 1}/${questions.length}`;
+            document.getElementById('question-count').innerText = `${currentQuestionIndex + 1}/${activeQuestions.length}`;
             document.getElementById('question-image').src = q.img;
             
             const container = document.getElementById('options-container');
@@ -217,21 +218,26 @@
             
             q.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = "option-btn w-full py-4 px-6 rounded-2xl border-2 border-slate-100 text-xl font-bold text-slate-700 hover:border-indigo-500 hover:text-indigo-600 bg-white";
+                btn.className = "option-btn w-full py-4 px-6 rounded-2xl text-xl font-bold text-slate-700 bg-white";
                 btn.innerText = opt;
-                btn.onclick = () => checkAnswer(index);
+                btn.onclick = () => checkAnswer(btn, index);
                 container.appendChild(btn);
             });
         }
 
-        function checkAnswer(index) {
-            const q = questions[currentQuestionIndex];
+        function checkAnswer(btn, index) {
+            const q = activeQuestions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+
             if (index === q.correct) {
                 score += 10;
-                showFeedback(true, "Great Job!", "That is correct!");
+                btn.classList.add('btn-correct');
+                setTimeout(() => showFeedback(true, "¡Excelente!", "¡Has acertado!"), 400);
             } else {
                 lives--;
-                showFeedback(false, "Not quite!", q.hint);
+                btn.classList.add('btn-wrong');
+                setTimeout(() => showFeedback(false, "¡Casi!", q.hint), 400);
             }
             updateStats();
         }
@@ -248,12 +254,12 @@
             
             if (isCorrect) {
                 fIcon.innerText = "🌟";
-                fBtn.innerText = "Next Question";
-                fBtn.className = "w-full py-4 px-6 rounded-2xl font-black text-white bg-green-500 hover:bg-green-600 shadow-lg";
+                fBtn.innerText = "Siguiente";
+                fBtn.style.backgroundColor = "#22c55e";
             } else {
                 fIcon.innerText = "💡";
-                fBtn.innerText = "Got it!";
-                fBtn.className = "w-full py-4 px-6 rounded-2xl font-black text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg";
+                fBtn.innerText = "Entendido";
+                fBtn.style.backgroundColor = "#103459";
             }
             
             modal.classList.remove('hidden');
@@ -261,8 +267,26 @@
 
         function closeFeedback() {
             document.getElementById('feedback-modal').classList.add('hidden');
-            if (lives <= 0 || currentQuestionIndex >= questions.length - 1) {
+            
+            if (lives <= 0) {
                 endGame();
+                return;
+            }
+
+            if (currentQuestionIndex >= activeQuestions.length - 1) {
+                if (currentRound === 1) {
+                    currentRound = 2;
+                    currentQuestionIndex = 0;
+                    activeQuestions = [...round2];
+                    showQuestion();
+                } else if (currentRound === 2) {
+                    currentRound = 3;
+                    currentQuestionIndex = 0;
+                    activeQuestions = [...round3];
+                    showQuestion();
+                } else {
+                    endGame();
+                }
             } else {
                 currentQuestionIndex++;
                 showQuestion();
@@ -276,7 +300,7 @@
             for(let i=0; i<3; i++) {
                 const heart = document.createElement('span');
                 heart.innerText = i < lives ? '❤️' : '🖤';
-                heart.className = "text-xl";
+                heart.className = "text-lg";
                 hearts.appendChild(heart);
             }
         }
@@ -285,6 +309,11 @@
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score;
+            
+            const rTitle = document.getElementById('result-title');
+            if (score >= 250) rTitle.innerText = "¡Eres un experto!";
+            else if (score >= 150) rTitle.innerText = "¡Muy buen progreso!";
+            else rTitle.innerText = "¡Sigue practicando!";
         }
 
         function resetGame() {
