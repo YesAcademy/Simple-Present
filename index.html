@@ -69,17 +69,35 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .brand-footer {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <div id="game-container" class="w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-[8px] border-slate-50">
+    <div id="game-container" class="w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-[8px] border-slate-50 flex flex-col min-h-[650px]">
         
-        <!-- Start Screen -->
-        <div id="start-screen" class="p-10 text-center">
+        <!-- Pantalla de Inicio -->
+        <div id="start-screen" class="p-10 text-center flex-grow flex flex-col justify-center">
             <div class="mb-8">
-                <!-- Usando el archivo local subido por el usuario -->
-                <img src="Logo horizontal transparente.png" alt="YES Logo" class="h-16 mx-auto mb-6" onerror="this.src='https://via.placeholder.com/200x80?text=YES+ENGLISH'">
+                <img src="Logo horizontal transparente.png" alt="Yes Academy" class="h-16 mx-auto mb-2" onerror="this.style.display='none'">
+                <p class="brand-text-dark font-bold text-sm tracking-tight">Yes Academy</p>
+                <p class="text-[10px] text-slate-400 italic">by Alfa Howling</p>
             </div>
             <h1 class="text-4xl font-extrabold brand-text-dark mb-3">English Quest</h1>
             <p class="text-lg text-slate-500 mb-10">Domina el Presente Simple en 3 Rondas</p>
@@ -89,16 +107,19 @@
             </button>
         </div>
 
-        <!-- Quiz Screen -->
-        <div id="quiz-screen" class="hidden fade-in">
+        <!-- Pantalla de Juego -->
+        <div id="quiz-screen" class="hidden fade-in flex-grow flex flex-col">
             <div class="p-4 flex justify-between items-center bg-white border-b border-slate-50">
-                <img src="Logo horizontal transparente.png" alt="YES Logo" class="h-6 opacity-80" onerror="this.style.display='none'">
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-black brand-text-dark leading-none">YES ACADEMY</span>
+                    <span class="text-[8px] text-slate-400">by Alfa Howling</span>
+                </div>
                 <div class="flex gap-1" id="hearts-container"></div>
             </div>
             
             <div class="px-6 py-2 flex justify-between items-center">
                 <div>
-                    <span id="round-title" class="text-[10px] font-black brand-text-dark uppercase tracking-[0.2em] block">ROUND 1: TO BE</span>
+                    <span id="round-title-quiz" class="text-[10px] font-black brand-text-dark uppercase tracking-[0.2em] block">ROUND 1</span>
                     <span id="question-count" class="text-xs font-bold text-slate-400">1/10</span>
                 </div>
                 <div class="bg-indigo-50 px-4 py-1 rounded-full flex items-center gap-2">
@@ -107,9 +128,9 @@
                 </div>
             </div>
 
-            <div class="p-6 pt-2">
-                <div class="image-container mb-6 aspect-video border-2 border-slate-100">
-                    <img id="question-image" src="" alt="Learning Illustration" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=80'">
+            <div class="p-6 pt-2 flex-grow">
+                <div class="image-container mb-6 aspect-video border-2 border-slate-100 bg-slate-200">
+                    <img id="question-image" src="" alt="Learning" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=80'">
                 </div>
 
                 <div class="mb-6 text-center">
@@ -120,23 +141,71 @@
             </div>
         </div>
 
-        <!-- Result Screen -->
-        <div id="result-screen" class="hidden p-12 text-center fade-in">
-            <img src="Logo horizontal transparente.png" alt="YES Logo" class="h-12 mx-auto mb-8" onerror="this.style.display='none'">
-            <div id="final-emoji" class="text-7xl mb-6">🏆</div>
-            <h2 id="result-title" class="text-3xl font-black text-slate-900 mb-8">¡Excelente trabajo!</h2>
-            
-            <div class="bg-slate-50 rounded-[2rem] p-8 mb-8 border-2 border-slate-100">
-                <p class="text-slate-400 font-bold uppercase text-xs mb-1">Puntuación Final</p>
-                <div class="text-7xl font-black brand-text-dark" id="final-score">0</div>
+        <!-- Pantalla de Transición entre Rondas -->
+        <div id="transition-screen" class="hidden p-8 text-center fade-in flex-grow flex flex-col justify-center">
+            <div class="mb-6">
+                <span class="brand-bg-dark text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest">Ronda Completada</span>
             </div>
+            <h2 id="transition-round-name" class="text-3xl font-black brand-text-dark mb-2">¡Buen trabajo!</h2>
+            <p class="text-slate-500 mb-8">Puntos en esta ronda: <span id="transition-round-score" class="font-bold brand-text-dark text-xl">0</span></p>
             
-            <button onclick="resetGame()" class="w-full brand-bg-dark text-white font-bold py-5 px-8 rounded-3xl text-xl hover:opacity-95 transition-all">
-                Jugar de nuevo
+            <div class="bg-blue-50 border-2 border-blue-100 rounded-3xl p-6 mb-8 text-left">
+                <h3 class="font-black text-blue-900 text-sm uppercase mb-2">Siguiente: <span id="next-round-title">Ronda 2</span></h3>
+                <p id="next-round-description" class="text-blue-700 text-sm leading-relaxed"></p>
+            </div>
+
+            <button onclick="startNextRound()" class="w-full brand-bg-light text-white font-black py-4 px-8 rounded-2xl text-lg shadow-lg hover:opacity-90 transition-all">
+                CONTINUAR
             </button>
         </div>
 
-        <!-- Feedback Modal -->
+        <!-- Pantalla de Resultados Finales -->
+        <div id="result-screen" class="hidden p-8 text-center fade-in max-h-[90vh] overflow-y-auto custom-scrollbar flex-grow">
+            <div class="mb-4">
+                <p class="brand-text-dark font-black text-xs">YES ACADEMY</p>
+                <p class="text-[9px] text-slate-400 uppercase tracking-tighter">by Alfa Howling</p>
+            </div>
+            <div id="final-emoji" class="text-6xl mb-2">🏆</div>
+            <h2 id="result-title" class="text-2xl font-black text-slate-900 mb-6">Resumen del Desafío</h2>
+            
+            <div class="grid grid-cols-3 gap-2 mb-6">
+                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                    <p class="text-[9px] uppercase font-bold text-slate-400">Ronda 1</p>
+                    <p id="round1-score" class="text-lg font-black brand-text-dark">0</p>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                    <p class="text-[9px] uppercase font-bold text-slate-400">Ronda 2</p>
+                    <p id="round2-score" class="text-lg font-black brand-text-dark">0</p>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                    <p class="text-[9px] uppercase font-bold text-slate-400">Ronda 3</p>
+                    <p id="round3-score" class="text-lg font-black brand-text-dark">0</p>
+                </div>
+            </div>
+
+            <div class="bg-brand-dark-blue text-white rounded-[2rem] p-6 mb-6">
+                <p class="text-blue-200 font-bold uppercase text-[10px] tracking-widest mb-1">Puntuación Total</p>
+                <div class="text-5xl font-black" id="final-score">0</div>
+            </div>
+
+            <div id="errors-section" class="text-left mb-8 hidden">
+                <h3 class="text-sm font-black text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <span class="text-red-500">❌</span> Repaso de Errores
+                </h3>
+                <div id="errors-list" class="space-y-3"></div>
+            </div>
+            
+            <button onclick="resetGame()" class="w-full brand-bg-dark text-white font-bold py-4 px-8 rounded-2xl text-lg hover:opacity-95 transition-all">
+                Reintentar Desafío
+            </button>
+        </div>
+
+        <!-- Footer Permanente -->
+        <div class="p-4 text-center border-t border-slate-50 bg-slate-50/50">
+            <p class="brand-footer font-bold uppercase">Yes Academy by Alfa Howling</p>
+        </div>
+
+        <!-- Modal de Feedback -->
         <div id="feedback-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
             <div class="bg-white rounded-[2.5rem] p-8 max-w-sm w-full text-center shadow-2xl">
                 <div id="feedback-icon" class="text-7xl mb-4"></div>
@@ -148,69 +217,84 @@
     </div>
 
     <script>
-        const round1 = [
-            { q: "I _____ a happy student.", options: ["am", "is", "are"], correct: 0, hint: "I + am.", img: "https://images.unsplash.com/photo-1523240715630-9917c1ad6a0c?w=600" },
-            { q: "She _____ my best friend.", options: ["am", "is", "are"], correct: 1, hint: "He/She/It + is.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600" },
-            { q: "They _____ from Spain.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.unsplash.com/photo-1543783230-27838421ee18?w=600" },
-            { q: "It _____ a sunny day.", options: ["am", "is", "are"], correct: 1, hint: "It + is.", img: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600" },
-            { q: "You _____ very tall.", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600" },
-            { q: "We _____ hungry.", options: ["am", "is", "are"], correct: 2, hint: "We + are.", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600" },
-            { q: "My car _____ blue.", options: ["am", "is", "are"], correct: 1, hint: "Car (It) + is.", img: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600" },
-            { q: "The cats _____ black.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600" },
-            { q: "I _____ not tired.", options: ["am", "is", "are"], correct: 0, hint: "I + am + not.", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600" },
-            { q: "_____ she your teacher?", options: ["Am", "Is", "Are"], correct: 1, hint: "Is + She...?", img: "https://images.unsplash.com/photo-1544717297-fa95b8ee4a03?w=600" }
-        ];
-
-        const round2 = [
-            { q: "He _____ pizza every Friday.", options: ["eat", "eats", "eating"], correct: 1, hint: "He/She/It + verbo con 's'.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600" },
-            { q: "We _____ in a big house.", options: ["live", "lives", "living"], correct: 0, hint: "We + verbo base.", img: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=600" },
-            { q: "I _____ play video games.", options: ["don't", "doesn't", "not"], correct: 0, hint: "I + don't + verbo.", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600" },
-            { q: "She _____ to music.", options: ["listen", "listens", "listening"], correct: 1, hint: "She + verbo con 's'.", img: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" },
-            { q: "They _____ to the park.", options: ["go", "goes", "going"], correct: 0, hint: "They + verbo base.", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600" },
-            { q: "_____ you like chocolate?", options: ["Do", "Does", "Are"], correct: 0, hint: "Do + You...?", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=600" },
-            { q: "My dad _____ a car.", options: ["drive", "drives", "driving"], correct: 1, hint: "Dad (He) + verbo con 's'.", img: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600" },
-            { q: "Do you _____ coffee?", options: ["drink", "drinks", "drinking"], correct: 0, hint: "Auxiliar 'Do' -> verbo base.", img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600" },
-            { q: "She _____ speak Italian.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "She + doesn't + verbo.", img: "https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=600" },
-            { q: "I _____ English every day.", options: ["study", "studies", "studying"], correct: 0, hint: "I + verbo base.", img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600" }
-        ];
-
-        const round3 = [
-            { q: "Where _____ you from?", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=600" },
-            { q: "He _____ like vegetables.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "He + doesn't.", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600" },
-            { q: "_____ he have a sister?", options: ["Do", "Does", "Is"], correct: 1, hint: "Does + He...?", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=600" },
-            { q: "The sun _____ in the morning.", options: ["shine", "shines", "shining"], correct: 1, hint: "Sun (It) + shines.", img: "https://images.unsplash.com/photo-1470252649358-96f3c8024219?w=600" },
-            { q: "I _____ breakfast at 8:00.", options: ["have", "has", "having"], correct: 0, hint: "I + have.", img: "https://images.unsplash.com/photo-1493770348161-369560ae357d?w=600" },
-            { q: "My phone _____ broken.", options: ["am", "is", "are"], correct: 1, hint: "Phone (It) + is.", img: "https://images.unsplash.com/photo-1556656793-062ff9878233?w=600" },
-            { q: "We _____ play football.", options: ["don't", "doesn't", "isn't"], correct: 0, hint: "We + don't.", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600" },
-            { q: "Who _____ they?", options: ["am", "is", "are"], correct: 2, hint: "They + are.", img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600" },
-            { q: "She _____ a red dress.", options: ["wear", "wears", "wearing"], correct: 1, hint: "She + wears.", img: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600" },
-            { q: "My cat is white. _____ is cute.", options: ["He", "She", "It"], correct: 2, hint: "Animal (It) + is.", img: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600" }
-        ];
+        const roundData = {
+            1: {
+                name: "Verb To Be",
+                description: "En esta ronda practicaremos el uso de 'Am, Is, Are'. Fundamental para describir estados y personas.",
+                questions: [
+                    { q: "I _____ a happy student.", options: ["am", "is", "are"], correct: 0, hint: "I + am.", img: "https://images.pexels.com/photos/1462630/pexels-photo-1462630.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "She _____ my best friend.", options: ["am", "is", "are"], correct: 1, hint: "He/She/It + is.", img: "https://images.pexels.com/photos/1595391/pexels-photo-1595391.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "They _____ from Spain.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.pexels.com/photos/1314584/pexels-photo-1314584.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "It _____ a sunny day.", options: ["am", "is", "are"], correct: 1, hint: "It + is.", img: "https://images.pexels.com/photos/3768/sky-sunny-clouds-cloudy.jpg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "You _____ very tall.", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.pexels.com/photos/307847/pexels-photo-307847.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "We _____ hungry.", options: ["am", "is", "are"], correct: 2, hint: "We + are.", img: "https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "My car _____ blue.", options: ["am", "is", "are"], correct: 1, hint: "Car (It) + is.", img: "https://images.pexels.com/photos/244206/pexels-photo-244206.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "The cats _____ black.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "I _____ not tired.", options: ["am", "is", "are"], correct: 0, hint: "I + am + not.", img: "https://images.pexels.com/photos/3771069/pexels-photo-3771069.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "_____ she your teacher?", options: ["Am", "Is", "Are"], correct: 1, hint: "Is + She...?", img: "https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=600" }
+                ]
+            },
+            2: {
+                name: "Action Verbs",
+                description: "¡Es hora de moverse! Practicaremos verbos de acción y la regla de la 'S' para la tercera persona (He, She, It).",
+                questions: [
+                    { q: "He _____ pizza every Friday.", options: ["eat", "eats", "eating"], correct: 1, hint: "He/She/It + verbo con 's'.", img: "https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "We _____ in a big house.", options: ["live", "lives", "living"], correct: 0, hint: "We + verbo base.", img: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "I _____ play video games.", options: ["don't", "doesn't", "not"], correct: 0, hint: "I + don't + verbo.", img: "https://images.pexels.com/photos/163036/mario-luigi-yoshi-figures-163036.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "She _____ to music.", options: ["listen", "listens", "listening"], correct: 1, hint: "She + verbo con 's'.", img: "https://images.pexels.com/photos/3394666/pexels-photo-3394666.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "They _____ to the park.", options: ["go", "goes", "going"], correct: 0, hint: "They + verbo base.", img: "https://images.pexels.com/photos/601170/pexels-photo-601170.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "_____ you like chocolate?", options: ["Do", "Does", "Are"], correct: 0, hint: "Do + You...?", img: "https://images.pexels.com/photos/65882/chocolate-dark-coffee-confectionery-65882.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "My dad _____ a car.", options: ["drive", "drives", "driving"], correct: 1, hint: "Dad (He) + verbo con 's'.", img: "https://images.pexels.com/photos/164634/pexels-photo-164634.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "Do you _____ coffee?", options: ["drink", "drinks", "drinking"], correct: 0, hint: "Auxiliar 'Do' -> verbo base.", img: "https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "She _____ speak Italian.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "She + doesn't + verbo.", img: "https://images.pexels.com/photos/1102341/pexels-photo-1102341.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "I _____ English every day.", options: ["study", "studies", "studying"], correct: 0, hint: "I + verbo base.", img: "https://images.pexels.com/photos/301920/pexels-photo-301920.jpeg?auto=compress&cs=tinysrgb&w=600" }
+                ]
+            },
+            3: {
+                name: "Mixed Challenge",
+                description: "¡El reto final! Mezclaremos 'To Be' con verbos de acción. Demuestra que dominas el presente simple.",
+                questions: [
+                    { q: "Where _____ you from?", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.pexels.com/photos/415958/pexels-photo-415958.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "He _____ like vegetables.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "He + doesn't.", img: "https://images.pexels.com/photos/1150447/pexels-photo-1150447.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "_____ he have a sister?", options: ["Do", "Does", "Is"], correct: 1, hint: "Does + He...?", img: "https://images.pexels.com/photos/1236611/pexels-photo-1236611.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "The sun _____ in the morning.", options: ["shine", "shines", "shining"], correct: 1, hint: "Sun (It) + shines.", img: "https://images.pexels.com/photos/189349/pexels-photo-189349.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "I _____ breakfast at 8:00.", options: ["have", "has", "having"], correct: 0, hint: "I + have.", img: "https://images.pexels.com/photos/103124/pexels-photo-103124.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "My phone _____ broken.", options: ["am", "is", "are"], correct: 1, hint: "Phone (It) + is.", img: "https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "We _____ play football.", options: ["don't", "doesn't", "isn't"], correct: 0, hint: "We + don't.", img: "https://images.pexels.com/photos/46734/football-ball-sport-game-46734.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "Who _____ they?", options: ["am", "is", "are"], correct: 2, hint: "They + are.", img: "https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "She _____ a red dress.", options: ["wear", "wears", "wearing"], correct: 1, hint: "She + wears.", img: "https://images.pexels.com/photos/3120485/pexels-photo-3120485.jpeg?auto=compress&cs=tinysrgb&w=600" },
+                    { q: "My cat is white. _____ is cute.", options: ["He", "She", "It"], correct: 2, hint: "Animal (It) + is.", img: "https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg?auto=compress&cs=tinysrgb&w=600" }
+                ]
+            }
+        };
 
         let currentRound = 1;
         let currentQuestionIndex = 0;
         let score = 0;
         let lives = 3;
         let activeQuestions = [];
+        let roundScores = { 1: 0, 2: 0, 3: 0 };
+        let errors = [];
 
         function startGame() {
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('quiz-screen').classList.remove('hidden');
             document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('transition-screen').classList.add('hidden');
             score = 0;
             lives = 3;
             currentRound = 1;
             currentQuestionIndex = 0;
-            activeQuestions = [...round1];
+            roundScores = { 1: 0, 2: 0, 3: 0 };
+            errors = [];
+            activeQuestions = [...roundData[1].questions];
             updateStats();
             showQuestion();
         }
 
         function showQuestion() {
             const q = activeQuestions[currentQuestionIndex];
-            const roundNames = ["", "Verb to Be", "Action Verbs", "Mixed Challenge"];
-            
-            document.getElementById('round-title').innerText = `ROUND ${currentRound}: ${roundNames[currentRound]}`;
+            document.getElementById('round-title-quiz').innerText = `ROUND ${currentRound}: ${roundData[currentRound].name}`;
             document.getElementById('question-text').innerText = q.q;
             document.getElementById('question-count').innerText = `${currentQuestionIndex + 1}/${activeQuestions.length}`;
             document.getElementById('question-image').src = q.img;
@@ -220,7 +304,7 @@
             
             q.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = "option-btn w-full py-4 px-6 rounded-2xl text-xl font-bold text-slate-700 bg-white";
+                btn.className = "option-btn w-full py-4 px-6 rounded-2xl text-xl font-bold text-slate-700 bg-white shadow-sm";
                 btn.innerText = opt;
                 btn.onclick = () => checkAnswer(btn, index);
                 container.appendChild(btn);
@@ -234,11 +318,17 @@
 
             if (index === q.correct) {
                 score += 10;
+                roundScores[currentRound] += 10;
                 btn.classList.add('btn-correct');
                 setTimeout(() => showFeedback(true, "¡Excelente!", "¡Has acertado!"), 400);
             } else {
                 lives--;
                 btn.classList.add('btn-wrong');
+                errors.push({
+                    question: q.q,
+                    yourAnswer: q.options[index],
+                    correctAnswer: q.options[q.correct]
+                });
                 setTimeout(() => showFeedback(false, "¡Casi!", q.hint), 400);
             }
             updateStats();
@@ -246,52 +336,61 @@
 
         function showFeedback(isCorrect, title, message) {
             const modal = document.getElementById('feedback-modal');
-            const fTitle = document.getElementById('feedback-title');
-            const fMsg = document.getElementById('feedback-message');
+            document.getElementById('feedback-title').innerText = title;
+            document.getElementById('feedback-message').innerText = message;
             const fIcon = document.getElementById('feedback-icon');
             const fBtn = document.getElementById('feedback-btn');
             
-            fTitle.innerText = title;
-            fMsg.innerText = message;
-            
             if (isCorrect) {
                 fIcon.innerText = "🌟";
-                fBtn.innerText = "Siguiente";
+                fBtn.innerText = "Continuar";
                 fBtn.style.backgroundColor = "#22c55e";
             } else {
                 fIcon.innerText = "💡";
                 fBtn.innerText = "Entendido";
                 fBtn.style.backgroundColor = "#103459";
             }
-            
             modal.classList.remove('hidden');
         }
 
         function closeFeedback() {
             document.getElementById('feedback-modal').classList.add('hidden');
+            if (lives <= 0) { endGame(); return; }
             
-            if (lives <= 0) {
-                endGame();
-                return;
-            }
-
             if (currentQuestionIndex >= activeQuestions.length - 1) {
-                if (currentRound === 1) {
-                    currentRound = 2;
-                    currentQuestionIndex = 0;
-                    activeQuestions = [...round2];
-                    showQuestion();
-                } else if (currentRound === 2) {
-                    currentRound = 3;
-                    currentQuestionIndex = 0;
-                    activeQuestions = [...round3];
-                    showQuestion();
-                } else {
-                    endGame();
-                }
+                showTransition();
             } else {
                 currentQuestionIndex++;
                 showQuestion();
+            }
+        }
+
+        function showTransition() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('transition-screen').classList.remove('hidden');
+            
+            document.getElementById('transition-round-score').innerText = roundScores[currentRound];
+            
+            if (currentRound < 3) {
+                const nextRound = currentRound + 1;
+                document.getElementById('next-round-title').innerText = `Ronda ${nextRound}: ${roundData[nextRound].name}`;
+                document.getElementById('next-round-description').innerText = roundData[nextRound].description;
+            } else {
+                // Si es la última ronda, saltamos al final
+                endGame();
+            }
+        }
+
+        function startNextRound() {
+            if (currentRound < 3) {
+                currentRound++;
+                currentQuestionIndex = 0;
+                activeQuestions = [...roundData[currentRound].questions];
+                document.getElementById('transition-screen').classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                showQuestion();
+            } else {
+                endGame();
             }
         }
 
@@ -309,18 +408,37 @@
 
         function endGame() {
             document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('transition-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
+            
+            document.getElementById('round1-score').innerText = roundScores[1];
+            document.getElementById('round2-score').innerText = roundScores[2];
+            document.getElementById('round3-score').innerText = roundScores[3];
             document.getElementById('final-score').innerText = score;
             
+            const errorsSection = document.getElementById('errors-section');
+            const errorsList = document.getElementById('errors-list');
+            errorsList.innerHTML = '';
+            
+            if (errors.length > 0) {
+                errorsSection.classList.remove('hidden');
+                errors.forEach(err => {
+                    const errDiv = document.createElement('div');
+                    errDiv.className = "bg-white p-4 rounded-2xl border-l-4 border-red-500 shadow-sm text-sm mb-2";
+                    errDiv.innerHTML = `<p class="font-bold text-slate-800 mb-1">${err.question.replace('_____', '___')}</p>
+                        <div class="flex flex-wrap gap-x-4 gap-y-1"><span class="text-red-500 font-medium">Tú: ${err.yourAnswer}</span><span class="text-green-600 font-black">Correcto: ${err.correctAnswer}</span></div>`;
+                    errorsList.appendChild(errDiv);
+                });
+            } else { errorsSection.classList.add('hidden'); }
+            
             const rTitle = document.getElementById('result-title');
-            if (score >= 250) rTitle.innerText = "¡Eres un experto!";
-            else if (score >= 150) rTitle.innerText = "¡Muy buen progreso!";
-            else rTitle.innerText = "¡Sigue practicando!";
+            const emoji = document.getElementById('final-emoji');
+            if (score >= 250) { rTitle.innerText = "¡Nivel Experto!"; emoji.innerText = "👑"; }
+            else if (score >= 150) { rTitle.innerText = "¡Buen Trabajo!"; emoji.innerText = "🥈"; }
+            else { rTitle.innerText = "¡Sigue Intentándolo!"; emoji.innerText = "💪"; }
         }
 
-        function resetGame() {
-            startGame();
-        }
+        function resetGame() { startGame(); }
     </script>
 </body>
 </html>
