@@ -34,7 +34,6 @@
             transform: scale(0.97);
         }
 
-        /* Feedback sutil */
         .btn-correct {
             border-color: #22c55e !important;
             background-color: #f0fdf4 !important;
@@ -52,7 +51,10 @@
             overflow: hidden;
             border-radius: 1.5rem;
             box-shadow: 0 10px 15px -3px rgba(16, 52, 89, 0.1);
-            background-color: #e2e8f0;
+            background-color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .brand-text-dark { color: var(--brand-dark-blue); }
@@ -76,7 +78,8 @@
         <!-- Start Screen -->
         <div id="start-screen" class="p-10 text-center">
             <div class="mb-8">
-                <img src="https://i.ibb.co/3ykG4S5/Logo-horizontal-transparente.png" alt="YES Logo" class="h-16 mx-auto mb-6">
+                <!-- Usando el archivo local subido por el usuario -->
+                <img src="Logo horizontal transparente.png" alt="YES Logo" class="h-16 mx-auto mb-6" onerror="this.src='https://via.placeholder.com/200x80?text=YES+ENGLISH'">
             </div>
             <h1 class="text-4xl font-extrabold brand-text-dark mb-3">English Quest</h1>
             <p class="text-lg text-slate-500 mb-10">Domina el Presente Simple en 3 Rondas</p>
@@ -89,7 +92,7 @@
         <!-- Quiz Screen -->
         <div id="quiz-screen" class="hidden fade-in">
             <div class="p-4 flex justify-between items-center bg-white border-b border-slate-50">
-                <img src="https://i.ibb.co/3ykG4S5/Logo-horizontal-transparente.png" alt="YES Logo" class="h-6 opacity-80">
+                <img src="Logo horizontal transparente.png" alt="YES Logo" class="h-6 opacity-80" onerror="this.style.display='none'">
                 <div class="flex gap-1" id="hearts-container"></div>
             </div>
             
@@ -106,7 +109,7 @@
 
             <div class="p-6 pt-2">
                 <div class="image-container mb-6 aspect-video border-2 border-slate-100">
-                    <img id="question-image" src="" alt="Learning Illustration" class="w-full h-full object-cover">
+                    <img id="question-image" src="" alt="Learning Illustration" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=80'">
                 </div>
 
                 <div class="mb-6 text-center">
@@ -119,7 +122,7 @@
 
         <!-- Result Screen -->
         <div id="result-screen" class="hidden p-12 text-center fade-in">
-            <img src="https://i.ibb.co/3ykG4S5/Logo-horizontal-transparente.png" alt="YES Logo" class="h-12 mx-auto mb-8">
+            <img src="Logo horizontal transparente.png" alt="YES Logo" class="h-12 mx-auto mb-8" onerror="this.style.display='none'">
             <div id="final-emoji" class="text-7xl mb-6">🏆</div>
             <h2 id="result-title" class="text-3xl font-black text-slate-900 mb-8">¡Excelente trabajo!</h2>
             
@@ -145,44 +148,43 @@
     </div>
 
     <script>
-        // RONDAS DE PREGUNTAS (Imágenes actualizadas y relacionadas)
-        const round1 = [ // Verb to Be
-            { q: "I _____ a happy student.", options: ["am", "is", "are"], correct: 0, hint: "I + am.", img: "https://images.unsplash.com/photo-1544717297-fa95b8ee4a03?w=600&q=80" },
-            { q: "She _____ my best friend.", options: ["am", "is", "are"], correct: 1, hint: "He/She/It + is.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80" },
-            { q: "They _____ from Spain.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=600&q=80" },
-            { q: "It _____ a sunny day.", options: ["am", "is", "are"], correct: 1, hint: "Objetos/Clima (It) + is.", img: "https://images.unsplash.com/photo-1444333509404-89ce7bcf42f0?w=600&q=80" },
-            { q: "You _____ very tall.", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.unsplash.com/photo-1510133769068-ad0560ac399e?w=600&q=80" },
-            { q: "We _____ hungry.", options: ["am", "is", "are"], correct: 2, hint: "We + are.", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&q=80" },
-            { q: "My car _____ blue.", options: ["am", "is", "are"], correct: 1, hint: "Car (It) + is.", img: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&q=80" },
-            { q: "The cats _____ black.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&q=80" },
-            { q: "I _____ not tired.", options: ["am", "is", "are"], correct: 0, hint: "I + am + not.", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80" },
-            { q: "_____ she your teacher?", options: ["Am", "Is", "Are"], correct: 1, hint: "Is + She...?", img: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=600&q=80" }
+        const round1 = [
+            { q: "I _____ a happy student.", options: ["am", "is", "are"], correct: 0, hint: "I + am.", img: "https://images.unsplash.com/photo-1523240715630-9917c1ad6a0c?w=600" },
+            { q: "She _____ my best friend.", options: ["am", "is", "are"], correct: 1, hint: "He/She/It + is.", img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600" },
+            { q: "They _____ from Spain.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.unsplash.com/photo-1543783230-27838421ee18?w=600" },
+            { q: "It _____ a sunny day.", options: ["am", "is", "are"], correct: 1, hint: "It + is.", img: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600" },
+            { q: "You _____ very tall.", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600" },
+            { q: "We _____ hungry.", options: ["am", "is", "are"], correct: 2, hint: "We + are.", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600" },
+            { q: "My car _____ blue.", options: ["am", "is", "are"], correct: 1, hint: "Car (It) + is.", img: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600" },
+            { q: "The cats _____ black.", options: ["am", "is", "are"], correct: 2, hint: "Plural (They) + are.", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600" },
+            { q: "I _____ not tired.", options: ["am", "is", "are"], correct: 0, hint: "I + am + not.", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600" },
+            { q: "_____ she your teacher?", options: ["Am", "Is", "Are"], correct: 1, hint: "Is + She...?", img: "https://images.unsplash.com/photo-1544717297-fa95b8ee4a03?w=600" }
         ];
 
-        const round2 = [ // Action Verbs
-            { q: "He _____ pizza every Friday.", options: ["eat", "eats", "eating"], correct: 1, hint: "He/She/It + verbo con 's'.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80" },
-            { q: "We _____ in a big house.", options: ["live", "lives", "living"], correct: 0, hint: "We + verbo base.", img: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80" },
-            { q: "I _____ play video games.", options: ["don't", "doesn't", "not"], correct: 0, hint: "I + don't + verbo.", img: "https://images.unsplash.com/photo-1592840331052-16e15c2c6f95?w=600&q=80" },
-            { q: "She _____ to music.", options: ["listen", "listens", "listening"], correct: 1, hint: "She + verbo con 's'.", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80" },
-            { q: "They _____ to the park.", options: ["go", "goes", "going"], correct: 0, hint: "They + verbo base.", img: "https://images.unsplash.com/photo-1519337265831-281ec6cc8514?w=600&q=80" },
-            { q: "_____ you like chocolate?", options: ["Do", "Does", "Are"], correct: 0, hint: "Do + You...?", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=600&q=80" },
-            { q: "My dad _____ a car.", options: ["drive", "drives", "driving"], correct: 1, hint: "My dad (He) + verbo con 's'.", img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80" },
-            { q: "Do you _____ coffee?", options: ["drink", "drinks", "drinking"], correct: 0, hint: "Con auxiliar 'Do', el verbo es base.", img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80" },
-            { q: "She _____ speak Italian.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "She + doesn't + verbo.", img: "https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=600&q=80" },
-            { q: "I _____ English every day.", options: ["study", "studies", "studying"], correct: 0, hint: "I + verbo base.", img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80" }
+        const round2 = [
+            { q: "He _____ pizza every Friday.", options: ["eat", "eats", "eating"], correct: 1, hint: "He/She/It + verbo con 's'.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600" },
+            { q: "We _____ in a big house.", options: ["live", "lives", "living"], correct: 0, hint: "We + verbo base.", img: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=600" },
+            { q: "I _____ play video games.", options: ["don't", "doesn't", "not"], correct: 0, hint: "I + don't + verbo.", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600" },
+            { q: "She _____ to music.", options: ["listen", "listens", "listening"], correct: 1, hint: "She + verbo con 's'.", img: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" },
+            { q: "They _____ to the park.", options: ["go", "goes", "going"], correct: 0, hint: "They + verbo base.", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600" },
+            { q: "_____ you like chocolate?", options: ["Do", "Does", "Are"], correct: 0, hint: "Do + You...?", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=600" },
+            { q: "My dad _____ a car.", options: ["drive", "drives", "driving"], correct: 1, hint: "Dad (He) + verbo con 's'.", img: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600" },
+            { q: "Do you _____ coffee?", options: ["drink", "drinks", "drinking"], correct: 0, hint: "Auxiliar 'Do' -> verbo base.", img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600" },
+            { q: "She _____ speak Italian.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "She + doesn't + verbo.", img: "https://images.unsplash.com/photo-1528114039593-4366cc08227d?w=600" },
+            { q: "I _____ English every day.", options: ["study", "studies", "studying"], correct: 0, hint: "I + verbo base.", img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600" }
         ];
 
-        const round3 = [ // Mixed Challenge
-            { q: "Where _____ you from?", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.unsplash.com/photo-1527672829624-fef145e99aea?w=600&q=80" },
-            { q: "He _____ like vegetables.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "He + doesn't.", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" },
-            { q: "_____ he have a sister?", options: ["Do", "Does", "Is"], correct: 1, hint: "Does + He...?", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=600&q=80" },
-            { q: "The sun _____ in the morning.", options: ["shine", "shines", "shining"], correct: 1, hint: "Sun (It) + shines.", img: "https://images.unsplash.com/photo-1470252649358-96f3c8024219?w=600&q=80" },
-            { q: "I _____ breakfast at 8:00.", options: ["have", "has", "having"], correct: 0, hint: "I + have.", img: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&q=80" },
-            { q: "My phone _____ broken.", options: ["am", "is", "are"], correct: 1, hint: "Phone (It) + is.", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80" },
-            { q: "We _____ play football.", options: ["don't", "doesn't", "isn't"], correct: 0, hint: "We + don't.", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80" },
-            { q: "Who _____ they?", options: ["am", "is", "are"], correct: 2, hint: "They + are.", img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=80" },
-            { q: "She _____ a red dress.", options: ["wear", "wears", "wearing"], correct: 1, hint: "She + wears.", img: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600&q=80" },
-            { q: "My cat is white. _____ is cute.", options: ["He", "She", "It"], correct: 2, hint: "Animals (It) + is.", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80" }
+        const round3 = [
+            { q: "Where _____ you from?", options: ["am", "is", "are"], correct: 2, hint: "You + are.", img: "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=600" },
+            { q: "He _____ like vegetables.", options: ["don't", "doesn't", "isn't"], correct: 1, hint: "He + doesn't.", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600" },
+            { q: "_____ he have a sister?", options: ["Do", "Does", "Is"], correct: 1, hint: "Does + He...?", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=600" },
+            { q: "The sun _____ in the morning.", options: ["shine", "shines", "shining"], correct: 1, hint: "Sun (It) + shines.", img: "https://images.unsplash.com/photo-1470252649358-96f3c8024219?w=600" },
+            { q: "I _____ breakfast at 8:00.", options: ["have", "has", "having"], correct: 0, hint: "I + have.", img: "https://images.unsplash.com/photo-1493770348161-369560ae357d?w=600" },
+            { q: "My phone _____ broken.", options: ["am", "is", "are"], correct: 1, hint: "Phone (It) + is.", img: "https://images.unsplash.com/photo-1556656793-062ff9878233?w=600" },
+            { q: "We _____ play football.", options: ["don't", "doesn't", "isn't"], correct: 0, hint: "We + don't.", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600" },
+            { q: "Who _____ they?", options: ["am", "is", "are"], correct: 2, hint: "They + are.", img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600" },
+            { q: "She _____ a red dress.", options: ["wear", "wears", "wearing"], correct: 1, hint: "She + wears.", img: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600" },
+            { q: "My cat is white. _____ is cute.", options: ["He", "She", "It"], correct: 2, hint: "Animal (It) + is.", img: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600" }
         ];
 
         let currentRound = 1;
